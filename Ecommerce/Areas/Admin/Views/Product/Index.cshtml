@@ -110,6 +110,7 @@ ViewData["Title"] = "Home Page";
                     <th scope="col">Max Price</th>
                     <th scope="col">CategoryId  </th>
                     <th scope="col">BrandId  </th>
+                    <th scope="col">BrandImg  </th>
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
@@ -139,6 +140,7 @@ ViewData["Title"] = "Home Page";
                         <td>@product.Price</td>
                         <td>@product.CategoryId</td>
                         <td>@product.BrandId</td>
+                        <td><img src="~/images/@product.Brand.Img" width="100"></td>
                         <td>
                             <a type="button" class="btn btn-warning" href="/Admin/Product/Edit/@product.Id">Edit</a>
                             <a class="btn btn-danger btn-delete"

@@ -6,7 +6,7 @@ namespace Ecommerce.Areas.Admin.Controllers
     [Area("Admin")]
     public class ProductController : Controller
     {
-        EcommerceDbContext _dbContext= new EcommerceDbContext();
+        EcommerceDbContext _dbContext = new EcommerceDbContext();
         public IActionResult Index(ProductFilter filter)
         {
             decimal discount = 50;
@@ -53,5 +53,21 @@ namespace Ecommerce.Areas.Admin.Controllers
 
             return View(products.ToList());
         }
+        [HttpGet]
+        public IActionResult Create()
+        {
+            ViewBag.Categories = _dbContext.Categories.ToList();
+            ViewBag.Brands = _dbContext.Brands.ToList();
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Create(Product product)
+        {
+            _dbContext.Products.Add(product);
+            _dbContext.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
+        }
     }
+
 }

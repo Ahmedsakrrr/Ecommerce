@@ -39,6 +39,7 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Name</th>
+                            <th scope="col">Img</th>
                             <th scope="col">Status</th>
                             <th scope="col">Actions</th>
                         </tr>
@@ -49,6 +50,10 @@
                             <tr>
                                 <th scope="row">@brand.Id</th>
                                 <td>@brand.Name</td>
+                            <td><img src="~/images/@brand.Img" height="160" width="160">
+                                <td />
+                        
+                                 
                          
                                 <td>
                                     @if (brand.Statu)

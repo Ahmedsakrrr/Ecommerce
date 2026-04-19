@@ -13,5 +13,13 @@ namespace Ecommerce.Areas.Admin.Controllers
         {
             return View();
         }
+        public IActionResult Unauthorized()
+        {
+            return View();
+        }
+        public IActionResult ServerError()
+        {
+            return View();
+        }
     }
 }
