@@ -19,69 +19,73 @@
             </div>
         </div>
     </div>
-</section>
-<div class="container">
-    <div class="row mb-3 align-items-center my-3">
-        <div class="col-md-6">
-            <h2 class="display-6">All Brands</h2>
-        </div>
-        <div class="col-md-6 text-md-end text-start mt-2 mt-md-0">
-            <a class="btn btn-success" href="/Admin/Brand/Create">Create</a>
-        </div>
-    </div>
+</section >
 
-    <div class="row">
-        <div class="col-12">
+    <div class="container">
+        <div class="row mb-3 align-items-center my-3">
+            <div class="col-md-6">
+                <h2 class="display-6">All Brands</h2>
+            </div>
+            <div class="col-md-6 text-md-end text-start mt-2 mt-md-0">
+                <a class="btn btn-success" href="/Admin/Brand/Create">Create</a>
+            </div>
+        </div>
 
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var brand in Model)
-                    {
+        <div class="row">
+            <div class="col-12">
+
+                <table class="table table-hover">
+                    <thead>
                         <tr>
-                            <th scope="row">@brand.Id</th>
-                            <td>@brand.Name</td>
-                         
-                            <td>
-                                @if (brand.Statu)
-                                {
-                                    <span class="badge text-bg-success">
-                                        Active
-                                    </span>
-                                
-                                }
-                                else
-                                {
-                                    <span class="badge text-bg-danger">
-                                        Inactive
-                                    </span>
-                                }
-                                
-                            </td>
-                            <td>
-                                <a type="button" class="btn btn-warning" href="/Admin/Brand/Edit/@brand.Id">Edit</a>
-                                <a class="btn btn-danger btn-delete"
-                                       data-url="/Admin/Brand/Delete/@brand.Id">
-                                    Delete
-                                </a>
-                            </td>
-                           
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Actions</th>
                         </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var brand in Model)
+                        {
+                            <tr>
+                                <th scope="row">@brand.Id</th>
+                                <td>@brand.Name</td>
+                         
+                                <td>
+                                    @if (brand.Statu)
+                                    {
+                                        <span class="badge text-bg-success">
+                                            Active
+                                        </span>
+                                
+                                    }
+                                    else
+                                    {
+                                        <span class="badge text-bg-danger">
+                                            Inactive
+                                        </span>
+                                    }
+                                
+                                </td>
+                                <td>
+                                    <a type="button" class="btn btn-warning" href="/Admin/Brand/Edit/@brand.Id">Edit</a>
+                                    <a class="btn btn-danger btn-delete"
+                                           data-url="/Admin/Brand/Delete/@brand.Id">
+                                        Delete
+                                    </a>
+                                </td>
+                           
+                            </tr>
                         
-                    }
+                        }
                     
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
+
+
+
 <!-- #Pagination -->
 <nav aria-label="Page navigation example">
     <ul class="pagination ">
