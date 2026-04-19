@@ -1,0 +1,186 @@
+﻿@model List<Product>
+@* @{
+ViewData["Title"] = "Home Page";
+} *@
+
+
+<!-- Filter Section -->
+<section class="py-3 filter-bar">
+<div class="container">
+    <div class="row" style="background-color: rgba(var(--bs-light-rgb), var(--bs-bg-opacity)) !important;">
+        <div class="col-12">
+            <form>
+                <div class="row">
+                    <!-- Product Name -->
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" name="ProductName" value="@ViewBag.ProductName" placeholder="Product Name">
+                    </div>
+
+                    <!-- Price Range -->
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" name="MinPrice" value="@ViewBag.MinPrice" placeholder="Min Price">
+                    </div>
+                    <div class="col-md-2">
+                        <input type="number" class="form-control" name="MaxPrice" value="@ViewBag.MaxPrice" placeholder="Max Price">
+                    </div>
+
+                    <!-- Category -->
+                    <div class="col-md-2">
+                        <select class="form-control" name="CategoryId">
+                            <option>--Select Category--</option>
+                            @foreach (var category in ViewBag.Categories)
+                            {
+                                if (ViewBag.CategoryId != null && ViewBag.CategoryId == category.Id)
+                                {
+                                    <option value="@category.Id" selected>@category.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@category.Id">@category.Name</option>
+                                }
+                            }
+                                
+                                
+                        </select>
+                    </div>
+                    <!-- Brand -->
+                    <div class="col-md-2">
+                        <select class="form-control" name="BrandId">
+                            <option>--Select Brand--</option>
+
+                            @foreach (var brand in ViewBag.Brands)
+                            {
+                                if (ViewBag.BrandId != null && ViewBag.BrandId == brand.Id)
+                                {
+                                    <option value="@brand.Id" selected>@brand.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@brand.Id">@brand.Name</option>
+                                }
+                                    
+                            }
+                                
+                        </select>
+                    </div>
+                    <!-- Hot Product Checkbox -->
+                    <div class="col-md-1">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" value="True" name="IsHot"
+                            @* @(ViewBag.IsHot ? "checked" : "") *@>
+                            <label class="form-check-label">Hot</label>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-dark w-100">Filter</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</section>
+
+
+<!-- Header-->
+<div class="container">
+<div class="row mb-3 align-items-center my-3">
+    <div class="col-md-6">
+        <h2 class="display-6">All Products</h2>
+    </div>
+    <div class="col-md-6 text-md-end text-start mt-2 mt-md-0">
+        <a class="btn btn-success" href="/Admin/Product/Create">Create</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Max Price</th>
+                    <th scope="col">CategoryId  </th>
+                    <th scope="col">BrandId  </th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model)
+                {
+                    <tr>
+                        <th scope="row">@product.Id</th>
+                        <td>@product.Name</td>
+                         
+                        <td>
+                            @if (product.Statu)
+                            {
+                                <span class="badge text-bg-success">
+                                    Active
+                                </span>
+                                
+                            }
+                            else
+                            {
+                                <span class="badge text-bg-danger">
+                                    Inactive
+                                </span>
+                            }
+                                
+                        </td>
+                        <td>@product.Price</td>
+                        <td>@product.CategoryId</td>
+                        <td>@product.BrandId</td>
+                        <td>
+                            <a type="button" class="btn btn-warning" href="/Admin/Product/Edit/@product.Id">Edit</a>
+                            <a class="btn btn-danger btn-delete"
+                                    data-url="/Admin/Product/Delete/@product.Id">
+                                Delete
+                            </a>
+                        </td>
+                           
+                    </tr>
+                        
+                
+                }  
+
+            </tbody>
+        </table>
+    </div>
+</div>
+</div>
+
+
+
+
+<nav aria-label="Page navigation example">
+<ul class="pagination ">
+    <li class="page-item @(ViewBag.currentPage == 1 ? "disabled" : "")">
+        <a class="page-link" href="/Admin/Product/Index?page=@(ViewBag.currentPage - 1)" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+            <span class="sr-only">Previous</span>
+        </a>
+    </li>
+    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+    {
+           
+        <li class="page-item active"><a class="page-link" href="/Admin/Product/Index?page=@i">@i</a></li>
+    }
+        
+        
+    <li class="page-item @(ViewBag.currentPage == ViewBag.TotalPages ? "disabled" : "") ">
+        <a class="page-link" href="/Admin/Category/Index?page=@(ViewBag.currentPage + 1)" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+            <span class="sr-only">Next</span>
+        </a>
+    </li>
+</ul>
+</nav>
