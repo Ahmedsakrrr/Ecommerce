@@ -106,10 +106,13 @@ ViewData["Title"] = "Home Page";
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Name</th>
+                    <th scope="col">Image</th>
                     <th scope="col">Status</th>
-                    <th scope="col">Max Price</th>
-                    <th scope="col">CategoryId  </th>
-                    <th scope="col">BrandId  </th>
+                    <th scope="col"> Price</th>
+                    <th scope="col"> Discount</th>
+                        <th scope="col"> Quantity</th>
+                    <th scope="col">Category Name  </th>
+                    <th scope="col">Brand Name  </th>
                     <th scope="col">BrandImg  </th>
                     <th scope="col">Actions</th>
                 </tr>
@@ -120,6 +123,9 @@ ViewData["Title"] = "Home Page";
                     <tr>
                         <th scope="row">@product.Id</th>
                         <td>@product.Name</td>
+                            <td>
+                                <img src="~/images/@(product.MainImg ?? "default.png")" width="100">
+                                </td>
                          
                         <td>
                             @if (product.Statu)
@@ -138,9 +144,23 @@ ViewData["Title"] = "Home Page";
                                 
                         </td>
                         <td>@product.Price</td>
-                        <td>@product.CategoryId</td>
-                        <td>@product.BrandId</td>
-                        <td><img src="~/images/@product.Brand.Img" width="100"></td>
+                        <td>@product.Discount</td>
+                        @if(product.Quantity<=20)
+                            {
+                                    <td class="badge text-danger">@product.Quantity</td>
+                                
+                            }
+                            else
+                            {
+                                    <td  >@product.Quantity</td>
+                                
+                            }
+
+                        <td>@product.Category.Name</td>
+                        <td>@product.Brand.Name</td>
+                            <td>
+                                <img src="~/images/@(product.Brand?.Img ?? "default.png")" width="100">
+                                </td>   
                         <td>
                             <a type="button" class="btn btn-warning" href="/Admin/Product/Edit/@product.Id">Edit</a>
                             <a class="btn btn-danger btn-delete"

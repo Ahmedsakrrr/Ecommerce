@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Ecommerce.Areas.Admin.Controllers
 {
@@ -61,6 +62,8 @@ namespace Ecommerce.Areas.Admin.Controllers
         public IActionResult Edit(Brand brand, IFormFile file)
         {
             var BrandInDb=_Dbcontext.Brands.AsNoTracking().FirstOrDefault(b => b.Id == brand.Id);
+            if (BrandInDb == null)
+                return NotFound();
             if (file is not null && file.Length > 0)
             {
                 string fileName = Guid.NewGuid().ToString() + " _ " + file.FileName;

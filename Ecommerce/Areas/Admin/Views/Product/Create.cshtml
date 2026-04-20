@@ -24,46 +24,81 @@
                 </div>
                 <div class="mb-3">
                     <label for="Quantity" class="form-label">Quantity</label>
-                    <input class="form-control" name="Quantity" />
+                    <input class="form-control" name="Quantity" type="number    "/>
                 </div>
                 <div class="mb-3">
+                    <label for="MainImg" class="form-label">Fille</label>
+                    <input class="form-control" name="file" type="file" />
+                </div>
+                <div class="mb-3">
+                    <label for="SubImgfiles" class="form-label">Sub img</label>
+                    <input class="form-control" name="SubImgfiles" type="file" multiple />
+                </div>
+                <div class="mb-3">
+                    <label for="Color" class="form-label">Color</label>
+
+                    <div id="colorContainer">
+                        <div class="mb-2 d-flex align-item-center">
+                            <input type="color" class="form-control form-control-color" name="Colors">
+                        </div>
+                    </div>
+
+                    <button type="button" id="addButtonColor" class="btn btn-outline-primary">+ Add New Color</button>
+                </div>
+
+                <div class="mb-3">
                     <label for="Price" class="form-label">Price</label>
-                    <input class="form-control" name="Price" />
+                    <input class="form-control" name="Price" type="number" />
+                </div>
+                <div class="mb-3">
+                    <label for="Discount" class="form-label">Discount</label>
+                    <input class="form-control" name="Discount" type="number" />
                 </div>
                 <div class="col-md-2">
                     <select class="form-control" name="CategoryId">
-                        <option>--Select Category--</option>
-                        @foreach (var category in ViewBag.Categories)
-                        {
-                            if (ViewBag.CategoryId != null && ViewBag.CategoryId == category.Id)
+                        <option>--Select Category--</option>.
+                        @if (ViewBag.Categories != null)
                             {
-                                <option value="@category.Id" selected>@category.Name</option>
-                            }
-                            else
+                            @foreach (var category in ViewBag.Categories)
                             {
-                                <option value="@category.Id">@category.Name</option>
+                                if (ViewBag.CategoryId != null && ViewBag.CategoryId == category.Id)
+                                {
+                                    <option value="@category.Id" selected>@category.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@category.Id">@category.Name</option>
+                                }
                             }
-                        }
+                           
                                 
+                        }
+
+                            
                                 
                     </select>
                 </div>
                 <div class="col-md-2">
                     <select class="form-control" name="BrandId">
                         <option>--Select Brand--</option>
-
-                        @foreach (var brand in ViewBag.Brands)
+                        @if (ViewBag.Brands != null)
                         {
-                            if (ViewBag.BrandId != null && ViewBag.BrandId == brand.Id)
+                            @foreach (var brand in ViewBag.Brands)
                             {
-                                <option value="@brand.Id" selected>@brand.Name</option>
-                            }
-                            else
-                            {
-                                <option value="@brand.Id">@brand.Name</option>
-                            }
+                                if (ViewBag.BrandId != null && ViewBag.BrandId == brand.Id)
+                                {
+                                    <option value="@brand.Id" selected>@brand.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@brand.Id">@brand.Name</option>
+                                }
                                     
+                            }
+                           
                         }
+
+                        
                                 
                     </select>
                 </div>
@@ -81,3 +116,25 @@
         </div>
     </div>
 </div>
+<script>
+    const conateiner = document.getElementById('colorContainer');
+    const addBtn = document.getElementById('addButtonColor');
+
+    addBtn.addEventListener('click', () => {
+        var colorRow = document.createElement('div');
+
+        colorRow.className = 'mb-2 d-flex align-item-center gap-1'
+        colorRow.innerHTML = `
+            <input type="color" class="form-control form-control-color" name="Colors">
+            <button type="Button" class="btn btn-danger btn-sm removeColor">x</button>
+        `;
+
+        conateiner.appendChild(colorRow);
+    });
+
+    conateiner.addEventListener('click', (e) => {
+        if(e.target.classList.contains('removeColor')) {
+            e.target.parentElement.remove();
+        }
+    })
+</script>

@@ -1,0 +1,142 @@
+﻿@model Product
+<div class="container">
+    <div class="row mb-3 align-items-center my-3">
+        <div class="col-md-6">
+            <h2 class="display-6">Edit Product</h2>
+        </div>
+    </div>
+
+    <div class="row my-3">
+        <div class="col-12">
+            <form method="post" enctype="multipart/form-data">
+
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input class="form-control" name="Name" value="@Model.Name" />
+                </div>
+                <div class="mb-3">
+                    <label for="MainImg" class="form-label">Img</label>
+                    <input type="file" name="file" class="form-control" accept="image/*" onchange="previewImage(event)">
+                    <span class="text-danger"></span>
+
+                </div>
+
+                <div class="mb-3">
+                    <img id="preview"
+                         src="~/images/@Model.MainImg"
+                         alt="Current Image"
+                         style="max-width: 200px; border:1px solid #ccc; padding:5px; border-radius:10px;" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <div class="form-floating">
+                        <textarea class="form-control" name="Description" placeholder="Leave a description here" style="height: 100px">@Model.Description </textarea>
+                        <label for="description">You Description Here...</label>
+
+                    </div>
+                    <div class="form-floating">
+                        <textarea class="form-control" name="Price" placeholder="Leave a description here" style="height: 100px">@Model.Price </textarea>
+                        <label for="description">You Price Here...</label>
+
+                    </div>
+                    <div class="form-floating">
+                        <textarea class="form-control" name="Discount" placeholder="Leave a description here" style="height: 100px">@Model.Discount </textarea>
+                        <label for="description">You Discount Here...</label>
+
+                    </div>
+                    
+                    <div class="form-floating">
+                        <textarea class="form-control" name="Quantity" placeholder="Leave a description here" style="height: 100px">@Model.Quantity </textarea>
+                        <label for="description">You Quantity Here...</label>
+
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-control" name="CategoryId">
+                        <option>--Select Category--</option>
+                        @if (ViewBag.Categories != null)
+                        {
+                            @foreach (var category in ViewBag.Categories)
+                            {
+                                if (ViewBag.CategoryId != null && ViewBag.CategoryId == category.Id)
+                                {
+                                    <option value="@category.Id" selected>@category.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@category.Id">@category.Name</option>
+                                }
+                            }
+                           
+                                
+                        }
+
+                            
+                                
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-control" name="BrandId">
+                        <option>--Select Brand--</option>
+                        @if (ViewBag.Brands != null)
+                        {
+                            @foreach (var brand in ViewBag.Brands)
+                            {
+                                if (ViewBag.BrandId != null && ViewBag.BrandId == brand.Id)
+                                {
+                                    <option value="@brand.Id" selected>@brand.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@brand.Id">@brand.Name</option>
+                                }
+                                    
+                            }
+                           
+                        }
+
+                        
+                                
+                    </select>
+                </div>
+                        
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select name="Statu" class="form-select">
+                        
+                        @if (Model.Statu)
+                        {
+                             
+                            <option selected value="True">Active</option>
+                            <option value="False">InActive</option>
+                        }
+                        else
+                        {
+                            <option value="True">Active</option>
+                            <option selected value="False">InActive</option>
+                        }
+                       
+                    </select>
+
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    function previewImage(event) {
+        const input = event.target;
+        const preview = document.getElementById("preview");
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result; // الصورة الجديدة
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+
