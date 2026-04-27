@@ -6,42 +6,50 @@ namespace Ecommerce.Areas.Admin.Controllers
     [Area("Admin")]
     public class ProductController : Controller
     {
-        EcommerceDbContext _dbContext = new EcommerceDbContext();
-        public IActionResult Index(ProductFilter filter)
+
+        Repositories<Product> _productRepository = new Repositories<Product>();
+        Repositories<Category> _categoryRepository = new Repositories<Category>();
+        Repositories<Brand> _brandRepository = new Repositories<Brand>();
+        public async Task<IActionResult> Index(ProductFilter filter)
         {
             decimal discount = 50;
-            var products = _dbContext.Products.AsQueryable();
 
-
+            var products = await _productRepository.Getasync(includes: [p => p.Category, p => p.Brand]);
 
             if (filter.ProductName is not null)
             {
-                products = products.Where(p => p.Name.Contains(filter.ProductName));
+
+                products = await _productRepository.Getasync(filter: p => p.Name.Contains(filter.ProductName));
                 ViewBag.ProductName = filter.ProductName;
             }
             if (filter.MinPrice > 0)
             {
-                products = products.Where(p => (p.Price - (p.Price * p.Discount / 100) >= filter.MinPrice));
+
+                products = await _productRepository.Getasync(filter: p => (p.Price - (p.Price * p.Discount / 100) >= filter.MinPrice));
                 ViewBag.MinPrice = filter.MinPrice;
             }
             if (filter.MaxPrice > 0)
             {
-                products = products.Where(p => (p.Price - (p.Price * p.Discount / 100) <= filter.MaxPrice));
+
+                products = await _productRepository.Getasync(filter: p => (p.Price - (p.Price * p.Discount / 100) <= filter.MaxPrice));
                 ViewBag.MaxPrice = filter.MaxPrice;
             }
             if (filter.CategoryId > 0)
             {
-                products = products.Where(p => p.CategoryId == filter.CategoryId);
+
+                products = await _productRepository.Getasync(p => p.CategoryId == filter.CategoryId);
                 ViewBag.CategoryId = filter.CategoryId;
             }
             if (filter.BrandId > 0)
             {
-                products = products.Where(p => p.BrandId == filter.BrandId);
+
+                products = await _productRepository.Getasync(p => p.BrandId == filter.BrandId);
                 ViewBag.BrandId = filter.BrandId;
             }
             if (filter.IsHot)
             {
-                products = products.Where(p => p.Discount > discount);
+
+                products = await _productRepository.Getasync(p => p.Discount > discount);
                 ViewBag.IsHot = filter.IsHot;
             }
             if (filter.Page > 0)
@@ -51,30 +59,35 @@ namespace Ecommerce.Areas.Admin.Controllers
             }
 
 
-            ViewBag.Categories = _dbContext.Categories.ToList();
-            ViewBag.Brands = _dbContext.Brands.ToList();
+
+            ViewBag.Categories = await _categoryRepository.Getasync();
+            ViewBag.Brands = await _brandRepository.Getasync();
 
             return View(products.ToList());
         }
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
 
-            ViewBag.Categories = _dbContext.Categories.ToList();
-            ViewBag.products = _dbContext.Products.ToList();
-            return View();
+            var categories = await _categoryRepository.Getasync();
+            var brands = await _brandRepository.Getasync();
+
+            return View(new ProductVM()
+            {
+                Categories = categories.ToList(),
+                Brands = brands.ToList()
+            });
         }
         [HttpPost]
-        public IActionResult Create(Product product, IFormFile file)
+        public async Task<IActionResult> Create(Product product, IFormFile file)
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.Categories = _dbContext.Categories.ToList();
-                ViewBag.Brands = _dbContext.Brands.ToList();
 
+                ViewBag.Categories = await _categoryRepository.Getasync();
+                ViewBag.Brands = await _brandRepository.Getasync();
                 return View(product);
             }
-
             if (file is not null && file.Length > 0)
             {
                 string fileName = Guid.NewGuid().ToString() + " _ " + file.FileName;
@@ -85,31 +98,36 @@ namespace Ecommerce.Areas.Admin.Controllers
                 }
                 product.MainImg = fileName;
             }
-           
 
-            _dbContext.Products.Add(product);
-            _dbContext.SaveChanges();
+            await _productRepository.CreateAsync(product);
+            await _productRepository.SaveAsync();
 
             return RedirectToAction(nameof(Index));
         }
         [HttpGet]
-        public IActionResult Edit(int id, IFormFile file)
+        public async Task<IActionResult> Edit(int id, IFormFile file)
         {
-            ViewBag.Categories = _dbContext.Categories.ToList();
-            ViewBag.Brands = _dbContext.Brands.ToList();
-            var product = _dbContext.Products.FirstOrDefault(b => b.Id == id);
+
+            var product = await _productRepository.GetOneAsync(filter: b => b.Id == id);
             if (product == null)
             {
                 return NotFound();
             }
 
-            return View(product);
+            return View(new ProductVM
+            {
+                Categories = (await _categoryRepository.Getasync()).ToList(),
+                Brands = (await _brandRepository.Getasync()).ToList(),
+                Product = product
+
+            });
 
         }
         [HttpPost]
-        public IActionResult Edit(Product product, IFormFile file)
+        public async Task<IActionResult> Edit(Product product, IFormFile file)
         {
-            var productInDb = _dbContext.Products.AsNoTracking().FirstOrDefault(b => b.Id == product.Id);
+
+            var productInDb = await _productRepository.GetOneAsync(filter: b => b.Id == product.Id, tracking: false);
 
             if (productInDb == null)
                 return NotFound();
@@ -138,28 +156,26 @@ namespace Ecommerce.Areas.Admin.Controllers
                 product.MainImg = productInDb.MainImg;
             }
 
-            _dbContext.Products.Update(product);
-            _dbContext.SaveChanges();
-
+            _productRepository.Update(product);
+            await _productRepository.SaveAsync();
             return RedirectToAction(nameof(Index));
         }
 
 
-        public IActionResult Delete(int id, IFormFile file)
+        public async Task<IActionResult> Delete(int id, IFormFile file)
         {
-            var product = _dbContext.Products.FirstOrDefault(p => p.Id == id);
+            var product = await _productRepository.GetOneAsync(filter: p => p.Id == id);
             if (product == null)
             {
                 return NotFound();
             }
             var OldPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", product.MainImg);
-
             if (System.IO.File.Exists(OldPath))
             {
                 System.IO.File.Delete(OldPath);
             }
-            _dbContext.Products.Remove(product);
-            _dbContext.SaveChanges();
+            _productRepository.Delete(product);
+            await _productRepository.SaveAsync();
             return RedirectToAction(nameof(Index));
         }
     }
